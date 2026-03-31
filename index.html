@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte de l'Inclusion Numérique - Bordeaux Métropole</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; font-family: sans-serif; }
+        #map { height: 100vh; width: 100%; }
+        .info-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="info-panel">
+    <h3>Inclusion Numérique</h3>
+    <p>Localisation des structures de Bordeaux Métropole.</p>
+    <div id="stats">Chargement des données...</div>
+</div>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- PapaParse pour lire le CSV -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+<script>
+    // Initialisation de la carte centrée sur Bordeaux
+    const map = L.map('map').setView([44.837789, -0.57918], 12);
+
+    // Utilisation d'un fond de carte alternatif (CartoDB Voyager)
+    // Contrairement à OSM standard, il est plus "propre" et ne nécessite pas de clé API
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+    }).addTo(map);
+
+    // Nom du fichier CSV (attention aux espaces et caractères spéciaux pour l'URL)
+    const csvFile = 'RAW_met_lieux_inclusion_numerique - RAW_met_lieux_inclusion_numerique.csv';
+
+    // Lecture du fichier CSV
+    Papa.parse(csvFile, {
+        download: true,
+        header: true,
+        complete: function(results) {
+            const data = results.data;
+            let markerCount = 0;
+
+            data.forEach(row => {
+                const lat = parseFloat(row.latitude);
+                const lng = parseFloat(row.longitude);
+
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    markerCount++;
+                    
+                    // Création du contenu du popup
+                    const popupContent = `
+                        <strong>${row.nom}</strong><br>
+                        ${row.adresse_brut}<br>
+                        <hr>
+                        <em>Type: ${row.type_lieu}</em><br>
+                        <strong>Public:</strong> ${row.public_cible}<br>
+                        <strong>Tarif:</strong> ${row.tarifs}
+                    `;
+
+                    L.marker([lat, lng])
+                        .addTo(map)
+                        .bindPopup(popupContent);
+                }
+            });
+
+            document.getElementById('stats').innerHTML = `<strong>${markerCount}</strong> structures référencées.`;
+        },
+        error: function(err) {
+            console.error("Erreur lors de la lecture du CSV:", err);
+            document.getElementById('stats').innerHTML = "Erreur de chargement des données.";
+        }
+    });
+</script>
+
+</body>
+</html>
