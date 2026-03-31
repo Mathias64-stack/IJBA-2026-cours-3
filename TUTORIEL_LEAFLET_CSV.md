@@ -1,13 +1,13 @@
 # Tutoriel : Créer une Carte Interactive Leaflet à partir d'un CSV
 
-Ce guide explique comment transformer un fichier de données CSV (contenant des coordonnées GPS) en une carte interactive web utilisant la bibliothèque **Leaflet.js**.
+Ce guide explique comment transformer un fichier de données CSV (contenant des coordonnées GPS) en une carte interactive web utilisant la bibliothèque **Leaflet.js**. Cette méthode ne nécessite aucune installation de logiciel (pas de Python, pas de base de données), tout se passe dans votre navigateur.
 
 ---
 
 ## 1. Structure du Projet
 Pour que la carte fonctionne, vous avez besoin de deux fichiers dans le même dossier :
-1. `index.html` : La page web qui contient la carte.
-2. `data.csv` : Votre fichier de données.
+1. `index.html` : La page web qui contient la carte et le script d'affichage.
+2. `data.csv` : Votre fichier de données contenant les adresses et coordonnées.
 
 ---
 
