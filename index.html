@@ -22,6 +22,12 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             max-width: 300px;
         }
+        /* Style pour l'étoile */
+        .star-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -41,17 +47,42 @@
 
 <script>
     // Initialisation de la carte centrée sur Bordeaux
-    const map = L.map('map').setView([44.837789, -0.57918], 12);
+    const map = L.map('map').setView([44.837789, -0.57918], 11);
 
-    // Utilisation d'un fond de carte alternatif (CartoDB Voyager)
-    // Contrairement à OSM standard, il est plus "propre" et ne nécessite pas de clé API
+    // Utilisation d'un fond de carte CartoDB Voyager
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 20
     }).addTo(map);
 
-    // Nom du fichier CSV (attention aux espaces et caractères spéciaux pour l'URL)
+    // 1. Ajout du contour de Bordeaux Métropole via l'API Open Data
+    fetch('https://opendata.bordeaux-metropole.fr/api/explore/v2.1/catalog/datasets/ec_commu_s/exports/geojson')
+        .then(response => response.json())
+        .then(geojsonData => {
+            L.geoJSON(geojsonData, {
+                style: {
+                    color: "#2c3e50",
+                    weight: 2,
+                    fillOpacity: 0.05,
+                    dashArray: '5, 5'
+                }
+            }).addTo(map);
+        })
+        .catch(err => console.error("Erreur GeoJSON:", err));
+
+    // 2. Définition de l'icône étoile (SVG)
+    const starIcon = L.divIcon({
+        className: 'star-icon',
+        html: `<svg width="24" height="24" viewBox="0 0 24 24" fill="#f1c40f" stroke="#d35400" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+               </svg>`,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+        popupAnchor: [0, -10]
+    });
+
+    // Nom du fichier CSV
     const csvFile = 'RAW_met_lieux_inclusion_numerique - RAW_met_lieux_inclusion_numerique.csv';
 
     // Lecture du fichier CSV
@@ -69,7 +100,6 @@
                 if (!isNaN(lat) && !isNaN(lng)) {
                     markerCount++;
                     
-                    // Création du contenu du popup
                     const popupContent = `
                         <strong>${row.nom}</strong><br>
                         ${row.adresse_brut}<br>
@@ -79,17 +109,13 @@
                         <strong>Tarif:</strong> ${row.tarifs}
                     `;
 
-                    L.marker([lat, lng])
+                    L.marker([lat, lng], { icon: starIcon })
                         .addTo(map)
                         .bindPopup(popupContent);
                 }
             });
 
             document.getElementById('stats').innerHTML = `<strong>${markerCount}</strong> structures référencées.`;
-        },
-        error: function(err) {
-            console.error("Erreur lors de la lecture du CSV:", err);
-            document.getElementById('stats').innerHTML = "Erreur de chargement des données.";
         }
     });
 </script>
