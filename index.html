@@ -92,17 +92,21 @@
         popupAnchor: [0, -15]
     });
 
-    const ijbaIcon = L.divIcon({
+    const ussrIcon = L.divIcon({
         className: 'star-icon',
-        html: `<div style="background:#e74c3c; color:white; font-weight:bold; padding:4px 8px; border-radius:4px; border:2px solid white; font-size:12px;">IJBA</div>`,
-        iconSize: [50, 25],
-        iconAnchor: [25, 12],
-        popupAnchor: [0, -12]
+        html: `<svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="45" fill="#cc0000" stroke="#ffcc00" stroke-width="2"/>
+                <path d="M65.3,31.7c-5.1-5.1-13.3-5.1-18.4,0c-1.8,1.8-3.1,4-3.7,6.4l-4.2,16.5l-10.4,10.4c-1.5,1.5-1.5,4,0,5.5s4,1.5,5.5,0l10.4-10.4l16.5-4.2c2.4-0.6,4.6-1.9,6.4-3.7C70.4,45,70.4,36.8,65.3,31.7z M49.8,49.8l-1.3,5.1l-5.4-5.4l5.1-1.3L49.8,49.8z" fill="#ffcc00"/>
+                <path d="M35.6,64.4l-8.5,8.5c-1.5,1.5-1.5,4,0,5.5s4,1.5,5.5,0l8.5-8.5L35.6,64.4z" fill="#ffcc00"/>
+               </svg>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -20]
     });
 
     // 3. Ajout des points spécifiques
     L.marker([44.81055, -0.58448], { icon: houseIcon }).addTo(map).bindPopup("<strong>48 rue Émile Combe</strong><br>Talence");
-    L.marker([44.82935, -0.56345], { icon: ijbaIcon }).addTo(map).bindPopup("<strong>IJBA</strong><br>1 rue Jacques Ellul, Bordeaux");
+    L.marker([44.82935, -0.56345], { icon: ussrIcon }).addTo(map).bindPopup("<strong>1 rue Jacques Ellul</strong><br>Bordeaux");
 
     // Nom du fichier CSV
     const csvFile = 'RAW_met_lieux_inclusion_numerique - RAW_met_lieux_inclusion_numerique.csv';
