@@ -71,7 +71,7 @@
         })
         .catch(err => console.error("Erreur GeoJSON:", err));
 
-    // 2. Définition de l'icône étoile (SVG)
+    // 2. Définition des icônes
     const starIcon = L.divIcon({
         className: 'star-icon',
         html: `<svg width="24" height="24" viewBox="0 0 24 24" fill="#f1c40f" stroke="#d35400" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
@@ -81,6 +81,28 @@
         iconAnchor: [12, 12],
         popupAnchor: [0, -10]
     });
+
+    const houseIcon = L.divIcon({
+        className: 'star-icon',
+        html: `<svg width="30" height="30" viewBox="0 0 24 24" fill="#3498db" stroke="white" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 12L12 3L21 12V21H15V15H9V21H3V12Z"/>
+               </svg>`,
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+        popupAnchor: [0, -15]
+    });
+
+    const ijbaIcon = L.divIcon({
+        className: 'star-icon',
+        html: `<div style="background:#e74c3c; color:white; font-weight:bold; padding:4px 8px; border-radius:4px; border:2px solid white; font-size:12px;">IJBA</div>`,
+        iconSize: [50, 25],
+        iconAnchor: [25, 12],
+        popupAnchor: [0, -12]
+    });
+
+    // 3. Ajout des points spécifiques
+    L.marker([44.81055, -0.58448], { icon: houseIcon }).addTo(map).bindPopup("<strong>48 rue Émile Combe</strong><br>Talence");
+    L.marker([44.82935, -0.56345], { icon: ijbaIcon }).addTo(map).bindPopup("<strong>IJBA</strong><br>1 rue Jacques Ellul, Bordeaux");
 
     // Nom du fichier CSV
     const csvFile = 'RAW_met_lieux_inclusion_numerique - RAW_met_lieux_inclusion_numerique.csv';
